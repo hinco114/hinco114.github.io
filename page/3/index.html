@@ -113,10 +113,10 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-06-30T16:05:32.000Z">2017-07-01</time>
+                <time class="level-item has-text-grey" datetime="2017-07-04T17:05:34.000Z">2017-07-05</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Server/">Server</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Server/Linux/">Linux</a>
+                <a class="has-link-grey -link" href="/categories/Dev/">Dev</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Dev/%ED%99%98%EA%B2%BD%EA%B5%AC%EC%B6%95/">환경구축</a>
                 </div>
                 
                 
@@ -126,37 +126,34 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2017/07/01/ubuntu_first_settings/">ESXi 위에 Ubuntu server 16.04 설치기</a>
+                <a class="has-link-black-ter" href="/2017/07/05/mailgun/">Mailgun 을 이용하여 개인 도메인 메일 서버 구축하기</a>
             
         </h1>
         <div class="content">
-            <p>기존에는 DSM 위에서 각종 서버들을 구동하였다.<br>서버 개발을 본격적으로 시작하는 지금, 직접 우분투 서버를 처음부터 구성하고 실제 프로젝트에 사용하기 위해 세팅을 할 것이다.<br>기존에 AWS EC2나 다른 클라우드 서버 등을 사용하였지만, 직접 구축해본다는것은 또 다른 느낌이다.<br>시작하겠다!!</p>
-<h1 id="Ubuntu-Server-이미지-구하기"><a href="#Ubuntu-Server-이미지-구하기" class="headerlink" title="Ubuntu Server 이미지 구하기"></a>Ubuntu Server 이미지 구하기</h1><p><a href="https://www.ubuntu.com/download/server" target="_blank" rel="noopener">https://www.ubuntu.com/download/server</a><br>위 주소에서 우분투를 다운받아 ESXi의 Datastore에 업로드한다.</p>
-<h1 id="ESXi-세팅하기"><a href="#ESXi-세팅하기" class="headerlink" title="ESXi 세팅하기"></a>ESXi 세팅하기</h1><p>새로운 VM을 생성한다.<br><code>Ubuntu Linux 64비트</code> 설정으로 생성을 하였고, <code>CPU</code>는 1소켓, <code>소켓당 코어수</code>는 1로 설정하였다.<br>찾아보니 CPU와 소켓당 코어수는 직접 설정해도 되나 VMWare 측의 권장사항은 1소켓 1코어로 해도 된다고 한다.<br>코어제한이 걸린 라이센스 때문에 이 옵션이 존재하는것 같다.<br>리눅스는 제한이 없기 때문에 선택은 자유이다.<br>내 서버에는 아직 SSD가 없기 때문에 HDD 를 100기가 할당하고 메모리는 3기가를 주었다.</p>
-<h1 id="Ubuntu-설치하기"><a href="#Ubuntu-설치하기" class="headerlink" title="Ubuntu 설치하기"></a>Ubuntu 설치하기</h1><p>구글에 <code>우분투 설치</code> 라고만 쳐도 좋은 튜토리얼들이 많이 있는것 같다.<br>하지만 튜토리얼을 보지 않더라도 그냥 쭉쭉 읽어보면 어렵지 않게 설치가 가능했다.<br>Local 설정은 US 그대로 하였고, 키보드 레이아웃도 US로 하였다.<br>Region 설정만 Asia/Seoul 로 진행하였다.<br>서버 설치 완료 후, 모든 패키지를 최신버전으로 업데이트 하였다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+            <p>여러 레퍼런스들을 참고하여 진행하였지만, 가장 잘 정리된곳은 <a href="http://wequlo.blogspot.kr/2017/04/mail-gun.html" target="_blank" rel="noopener">이곳</a> 이다.  </p>
+<h1 id="Mailgun-가입하기"><a href="#Mailgun-가입하기" class="headerlink" title="Mailgun 가입하기"></a>Mailgun 가입하기</h1><p><code>Mailgun</code> 서비스는, 기존에 존재하는 도메인을 이용해 메일 발송과 수신을 할 수 있게 해주는 서비스이다.<br>발송은 월 1만건까지 가능하며, 그 이상 되면 과금이 되는 형식이다.<br>또는 서비스 플랜에 가입하여 사용 가능하다.<br>수신의 경우 특정 메일로 포워딩을 해주는 서비스를 할 수 있다.<br>따라서 개인 이메일로 포워딩을 시켜 편하게 이메일을 받아 볼 수 있다.  </p>
+<p><a href="https://www.mailgun.com/" target="_blank" rel="noopener">https://www.mailgun.com/</a> 공식 홈페이지에서 회원 가입을 한다.<br><img src="/images/mailgun/mailgun_apply.png" alt="가입 이미지"></p>
+<p>가입을 할 때 카드 정보를 입력하지 않으면, 나중에 이메일을 보낼 경우  </p>
+<blockquote>
+<p>Free accounts are for test purposes only. Please upgrade or add the address to authorized recipients in Account Settings</p>
+</blockquote>
+<p>라는 메세지가 뜨게 된다.<br>정보를 입력하지 않고 진행하고 테스트를 마친 후 정보를 입력해도 된다.  </p>
+<p>정보를 모두 입력하고 다음 단계로 넘어가면 이메일 인증을 거치며, 받은 이메일에서 링크를 클릭하면 SMS 인증을 하게 된다.</p>
+<h1 id="도메인-등록하기"><a href="#도메인-등록하기" class="headerlink" title="도메인 등록하기"></a>도메인 등록하기</h1><p>모든것을 마치면 이제 도메인을 등록 할 차례이다.<br>로그인 하면 아래의 <code>Add New Domain</code> 버튼을 눌러주자.<br><img src="/images/mailgun/mailgun_adddomain.png" alt="add new domain"></p>
+<p>이후 도메인을 입력하는 창이 나오는데, <code>abc.com</code> 이라면 똑같이 적어주면 된다.<br>그런데 서브도메인을 쓰기를 권장한다.<br>서브도메인을 쓰면 <code>@mail.abc.com</code> 라는 주소로 생성이 되는 것이고, 쓰지 않는다면 <code>@abc.com</code> 으로 생성이 된다.<br>나같은경우 서브 도메인이 없이 등록을 하였다.  </p>
+<p>이후에는 각종 설정법들이 나온다.<br>도메인을 인증하는 과정인데, 영어를 읽을 수 있으면 그냥 하란대로 하면 되는데 대충 설명하겠다.<br>개인의 <code>도메인 네임 서버 셋팅</code>으로 가서, <code>TXT</code> 타입으로 정보를 추가해주고, <code>MX</code>타입으로 메일서버를 등록해주고, <code>CNAME</code> 을 등록하는 것이다.<br>모든 정보를 복사 붙여넣기로 세팅을 하고, 도메인 네임서버가 적용되기를 조금 기다리자.<br>아래와 같은 사진에서 <code>Cehck DNS Records Now</code> 를 누르자<br><img src="/images/mailgun/mailgun_verification.png" alt="verification"></p>
+<p>적용이 제대로 되면, 아래와 같이 모두 초록색으로 잘 뜬다.<br><img src="/images/mailgun/mailgun_verified.png" alt="verified"></p>
+<h1 id="메일-보내기-테스트"><a href="#메일-보내기-테스트" class="headerlink" title="메일 보내기 테스트"></a>메일 보내기 테스트</h1><p>메일 보내는법은 여러가지가 있는데, 나는 OSX 에서 가장 간편한 curl 로 보내보겠다.<br><a href="https://documentation.mailgun.com/en/latest/quickstart-sending.html" target="_blank" rel="noopener">공식홈페이지 문서</a>를 보면, 아래와 같이 보내면 된다고 한다.  </p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -s --user <span class="hljs-string">'api:YOUR_API_KEY'</span> \</span><br><span class="line">    https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages \</span><br><span class="line">    -F from=<span class="hljs-string">'Excited User &lt;mailgun@YOUR_DOMAIN_NAME&gt;'</span> \</span><br><span class="line">    -F to=YOU@YOUR_DOMAIN_NAME \</span><br><span class="line">    -F to=bar@example.com \</span><br><span class="line">    -F subject=<span class="hljs-string">'Hello'</span> \</span><br><span class="line">    -F text=<span class="hljs-string">'Testing some Mailgun awesomness!'</span></span><br></pre></td></tr></table></figure>
 
+<p><code>YOUR_API_KEY</code> 부분과, <code>URL</code>을 도메인 설정에서 찾아 바꿔주고,<br><code>from</code>, <code>to</code>, <code>subject</code>, <code>text</code> 부분을 본인에게 맞게 설정하면 된다.<br>정상적으로 보내졌다면 아래와 같은 메세지가 뜬다.</p>
+<figure class="highlight javascript hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-string">"id"</span>: <span class="hljs-string">"&lt;해쉬값@abc.com&gt;"</span>,</span><br><span class="line">  <span class="hljs-string">"message"</span>: <span class="hljs-string">"Queued. Thank you."</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="openssh-server-설치"><a href="#openssh-server-설치" class="headerlink" title="openssh-server 설치"></a>openssh-server 설치</h1><p>설치 도중 추가적인 패키지를 설치하는 페이지가 있는데, 엔터를 잘못 눌러 그냥 진행이 되어버렸다.<br>그래서 <code>openssh-server</code> 를 따로 설치하였다.<br><a href="http://neoguru.tistory.com/57" target="_blank" rel="noopener">이곳</a> 을 참조하였다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install openssh-server</span><br><span class="line">$ netstat -ntl</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN</span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="계정-설정하기"><a href="#계정-설정하기" class="headerlink" title="계정 설정하기"></a>계정 설정하기</h1><p>우분투 설치 중, 실제 유저 이름을 적으라 해서 정말 내 이름을 적었더니 그것이 유저네임이 되어버렸다.<br>그래서 다른 계정을 만들기 위해 유저를 만들었다.<br><a href="http://www.hobbyhobby.net/blog/2012/02/linux/" target="_blank" rel="noopener">이곳</a> 을 참조하였다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ useradd [유저이름]</span><br><span class="line">$ passwd [유저이름]</span><br><span class="line">Changing password <span class="hljs-keyword">for</span> user [유저이름]</span><br><span class="line">New UNIX password:</span><br></pre></td></tr></table></figure>
-<p>만들고 해당 유저로 로그인해서 진행중, <code>sudo</code> 명령어를 치니 에러가 났다.<br>구글링을 해본 결과 <a href="https://blog.outsider.ne.kr/505" target="_blank" rel="noopener">이곳</a> 에서 원인을 알 수 있었다.<br><code>sudo</code>명령어를 칠 수 있는 유저들을 관리하는 <code>/etc/sudoers</code> 에 유저를 추가해야 했다.<br>블로그를 참고하여</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ visudo -f /etc/sudoers</span><br></pre></td></tr></table></figure>
-<p>명령어를 치고 새로 만든 내 유저를 추가하려고 보니, 내용중 아래와 같은 부분이 있었다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># Members of the admin group may gain root privileges</span></span><br><span class="line">%admin ALL=(ALL) ALL</span><br></pre></td></tr></table></figure>
-<p><code>admin</code> 그룹에 속한 유저는 모두 <code>sudo</code> 를 쓸 수 있다는 것이었다.<br>그래서 기존에 내가 만들었던 유저를 admin 그룹에 속하도록 하였다.<br>먼저 admin 이라는 그룹을 생성하고, 기존에 존재하던 유저를 해당 그룹 소속으로 바꿨다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ groupadd admin</span><br><span class="line">$ usermod -g admin [유저이름]</span><br></pre></td></tr></table></figure>
-<p>그리고 나서 해당 유저로 <code>sudo</code> 명령어가 정상적으로 작동되었다.</p>
-<h1 id="Ubuntu에-Docker-설치하기"><a href="#Ubuntu에-Docker-설치하기" class="headerlink" title="Ubuntu에 Docker 설치하기"></a>Ubuntu에 Docker 설치하기</h1><p>나같은경우, <code>Ubuntu</code>에 <code>Docker</code>를 설치하여 각종 프로젝트에 쓸 예정이다.<br>찾아보니 설치법은 두가지가 있었다.<br>첫번째로는 자동 설치이다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -s https://get.docker.io/ | sudo sh</span><br></pre></td></tr></table></figure>
-<p>이 명령어로 설치하면 알아서 해당 OS에 맞는 버전을 설치하는것 같다.<br>하지만 난 패키지를 통해 설치하였다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install docker.io</span><br></pre></td></tr></table></figure>
-<p>설치를 다 하였지만, 도커는 기본적으로 <code>root</code> 권한이 필요하다.<br>따라서 <a href="http://blog.nacyot.com/articles/2014-01-27-easy-deploy-with-docker/" target="_blank" rel="noopener">이곳</a> 을 참조하여 권한 설정을 하였다.</p>
-<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo usermod -aG docker <span class="hljs-variable">$USER</span></span><br><span class="line">$ sudo service docker restart</span><br></pre></td></tr></table></figure>
-<p>이후 유저를 재 로그인 하면 <code>sudo</code> 명령어 없이 해당 유저는 docker 명령어를 쓸 수 있다.</p>
+<p>그런데 큐에 들어간 뒤에도 꽤 시간이 지나야 메일이 발송된다… 지금만 그런 것일까?..  </p>
+<h1 id="도메인으로-이메일-받아보기"><a href="#도메인으로-이메일-받아보기" class="headerlink" title="도메인으로 이메일 받아보기"></a>도메인으로 이메일 받아보기</h1><p>메뉴중에 <code>Routes</code> 로 들어간다.<br><img src="/images/mailgun/mailgun_routes.png" alt="routes"></p>
+<p>거기서 <code>Create Route</code> 메뉴를 누르고<br><code>Expression Type</code> : Catch All (모든 메일을 포워딩한다)<br><code>Actions</code> : Forward (체크박스에 체크하고 아래에 받아볼 메일 주소를 쓰면 된다)  </p>
+<p>이렇게만 설정을 한 후 적용을 시키면 정상적으로 작동한다.<br>다른 옵션을 쓰려면 다르게 해도 된다.  </p>
+<p>이후 <code>@abc.com</code> 으로 오는 모든 메일은 위에서 설정한 메일 주소로 모두 포워딩 되어 온다.  </p>
 
         </div>
         
@@ -194,7 +191,7 @@
             
             <li><span class="pagination-ellipsis has-text-black-ter">&hellip;</span></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/9/">9</a></li>
+            <li><a class="pagination-link has-text-black-ter" href="/page/10/">10</a></li>
             
         </ul>
     </nav>
@@ -244,7 +241,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            9
+                            10
                         </p>
                     </a>
                 </div>
@@ -256,7 +253,7 @@
                     </p>
                     <a href="/categories">
                         <p class="title has-text-weight-normal">
-                            9
+                            10
                         </p>
                     </a>
                 </div>
@@ -268,7 +265,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            13
+                            16
                         </p>
                     </a>
                 </div>
@@ -332,6 +329,14 @@
                 <span class="level-item tag">1</span>
             </span>
         </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Game/">
+            <span class="level-start">
+                <span class="level-item">Game</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/NAS/">
             <span class="level-start">
                 <span class="level-item">NAS</span>
@@ -383,9 +388,9 @@
             <script src="https://ads-partners.coupang.com/g.js"></script>
             <script>
                 new PartnersCoupang.G({
-                    id: "AF0805578",
-                    height: "100%",
-                    width: "100%",
+                    id: "301746",
+                    // height: "100%",
+                    // width: "100%",
                     bordered: false
                 });
             </script>
@@ -402,6 +407,19 @@
         <h3 class="menu-label">
             최근 글
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-08-16T06:55:16.000Z">2020-08-16</time></div>
+                    <a href="/2020/08/16/arduino-logitech-diy/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Logitech G29 Pedal, Shifter 를 PC 와 직접 연결하기</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Game/">Game</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -455,19 +473,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2017-04-09T16:11:40.000Z">2017-04-10</time></div>
-                    <a href="/2017/04/10/B1697/" class="title has-link-black-ter is-size-6 has-text-weight-normal">백준 문제 풀이 - 1697</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Dev/">Dev</a> / <a class="has-link-grey -link" href="/categories/Dev/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/">알고리즘</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -476,7 +481,7 @@
         <h3 class="menu-label">
             태그 클라우드
         </h3>
-        <a href="/tags/BFS/" style="font-size: 10px;">BFS</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/Mailgun/" style="font-size: 10px;">Mailgun</a> <a href="/tags/NAS/" style="font-size: 10px;">NAS</a> <a href="/tags/SMTP/" style="font-size: 10px;">SMTP</a> <a href="/tags/TVHeadend/" style="font-size: 10px;">TVHeadend</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/%EB%84%8B%EB%91%90%EB%A6%AC/" style="font-size: 10px;">넋두리</a> <a href="/tags/%EB%8F%84%EB%A9%94%EC%9D%B8/" style="font-size: 10px;">도메인</a> <a href="/tags/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/" style="font-size: 13.33px;">알고리즘</a> <a href="/tags/%EC%BD%94%EC%96%B4-%EC%9E%90%EB%B0%948/" style="font-size: 16.67px;">코어 자바8</a>
+        <a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/BFS/" style="font-size: 10px;">BFS</a> <a href="/tags/Diy/" style="font-size: 10px;">Diy</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Game/" style="font-size: 10px;">Game</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/Mailgun/" style="font-size: 10px;">Mailgun</a> <a href="/tags/NAS/" style="font-size: 10px;">NAS</a> <a href="/tags/SMTP/" style="font-size: 10px;">SMTP</a> <a href="/tags/TVHeadend/" style="font-size: 10px;">TVHeadend</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/%EB%84%8B%EB%91%90%EB%A6%AC/" style="font-size: 10px;">넋두리</a> <a href="/tags/%EB%8F%84%EB%A9%94%EC%9D%B8/" style="font-size: 10px;">도메인</a> <a href="/tags/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/" style="font-size: 13.33px;">알고리즘</a> <a href="/tags/%EC%BD%94%EC%96%B4-%EC%9E%90%EB%B0%948/" style="font-size: 16.67px;">코어 자바8</a>
     </div>
 </div>
         
@@ -487,6 +492,17 @@
             아카이브
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">8월 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2017/07/">
@@ -547,6 +563,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-08-16T06:55:16.000Z">2020-08-16</time></div>
+                    <a href="/2020/08/16/arduino-logitech-diy/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Logitech G29 Pedal, Shifter 를 PC 와 직접 연결하기</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Game/">Game</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2017-07-11T22:35:04.000Z">2017-07-12</time></div>
                     <a href="/2017/07/12/nas-TVHeadend-setting/" class="title has-link-black-ter is-size-6 has-text-weight-normal">XPEnology에 Docker를 이용하여 TVHeadend 설정하기</a>
                     <p class="is-size-7 is-uppercase">
@@ -595,19 +624,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2017-04-09T16:11:40.000Z">2017-04-10</time></div>
-                    <a href="/2017/04/10/B1697/" class="title has-link-black-ter is-size-6 has-text-weight-normal">백준 문제 풀이 - 1697</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Dev/">Dev</a> / <a class="has-link-grey -link" href="/categories/Dev/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/">알고리즘</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -616,7 +632,7 @@
         <h3 class="menu-label">
             태그 클라우드
         </h3>
-        <a href="/tags/BFS/" style="font-size: 10px;">BFS</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/Mailgun/" style="font-size: 10px;">Mailgun</a> <a href="/tags/NAS/" style="font-size: 10px;">NAS</a> <a href="/tags/SMTP/" style="font-size: 10px;">SMTP</a> <a href="/tags/TVHeadend/" style="font-size: 10px;">TVHeadend</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/%EB%84%8B%EB%91%90%EB%A6%AC/" style="font-size: 10px;">넋두리</a> <a href="/tags/%EB%8F%84%EB%A9%94%EC%9D%B8/" style="font-size: 10px;">도메인</a> <a href="/tags/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/" style="font-size: 13.33px;">알고리즘</a> <a href="/tags/%EC%BD%94%EC%96%B4-%EC%9E%90%EB%B0%948/" style="font-size: 16.67px;">코어 자바8</a>
+        <a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/BFS/" style="font-size: 10px;">BFS</a> <a href="/tags/Diy/" style="font-size: 10px;">Diy</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Game/" style="font-size: 10px;">Game</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/Mailgun/" style="font-size: 10px;">Mailgun</a> <a href="/tags/NAS/" style="font-size: 10px;">NAS</a> <a href="/tags/SMTP/" style="font-size: 10px;">SMTP</a> <a href="/tags/TVHeadend/" style="font-size: 10px;">TVHeadend</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/%EB%84%8B%EB%91%90%EB%A6%AC/" style="font-size: 10px;">넋두리</a> <a href="/tags/%EB%8F%84%EB%A9%94%EC%9D%B8/" style="font-size: 10px;">도메인</a> <a href="/tags/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/" style="font-size: 13.33px;">알고리즘</a> <a href="/tags/%EC%BD%94%EC%96%B4-%EC%9E%90%EB%B0%948/" style="font-size: 16.67px;">코어 자바8</a>
     </div>
 </div>
     
@@ -627,6 +643,17 @@
             아카이브
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">8월 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2017/07/">
@@ -778,7 +805,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
     
     
-<a id="back-to-top" title="Kembali ke atas" href="javascript:;" target="_blank" rel="noopener">
+<a id="back-to-top" title="Back to Top" href="javascript:;" target="_blank" rel="noopener">
     <i class="fas fa-chevron-up"></i>
 </a>
 <script src="/js/back-to-top.js" defer></script>
