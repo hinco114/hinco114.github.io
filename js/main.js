@@ -20,11 +20,12 @@
         $('.justified-gallery').justifiedGallery();
     }
 
-    if (typeof moment === 'function') {
-        $('.article-meta time').each(function() {
-            $(this).text(moment($(this).attr('datetime')).fromNow());
-        });
-    }
+    // post 시간을 절대값으로 표현하도록 설정
+    // if (typeof moment === 'function') {
+    //     $('.article-meta time').each(function() {
+    //         $(this).text(moment($(this).attr('datetime')).fromNow());
+    //     });
+    // }
 
     $('.article > .content > table').each(function() {
         if ($(this).width() > $(this).parent().width()) {
