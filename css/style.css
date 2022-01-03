@@ -11367,6 +11367,9 @@ figure.highlight .section {
 .level.is-multiline {
   flex-wrap: wrap;
 }
+.coupang-affiliate {
+  height: 300px;
+}
 @media screen and (max-width: 768px) {
   .widget.card#toc {
     display: none;
